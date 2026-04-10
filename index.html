@@ -1,1 +1,1320 @@
+<!DOCTYPE html>
 
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Essence" />
+  <title>Les 9 Formes d'Intelligence</title>
+
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #fafaf9;
+      --bg2:       #ffffff;
+      --bg3:       #f5f5f4;
+      --border:    #e7e5e4;
+      --border2:   #d6d3d1;
+      --text:      #1c1917;
+      --text2:     #44403c;
+      --text3:     #78716c;
+      --text4:     #a8a29e;
+      --accent:    #1c1917;
+      --accent-fg: #ffffff;
+      --bar-h:     52px;
+      --safe-top:  env(safe-area-inset-top,    0px);
+      --safe-bot:  env(safe-area-inset-bottom, 0px);
+      --safe-l:    env(safe-area-inset-left,   0px);
+      --safe-r:    env(safe-area-inset-right,  0px);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:     #0c0a09;
+        --bg2:    #1c1917;
+        --bg3:    #1c1917;
+        --border: #292524;
+        --border2:#44403c;
+        --text:   #fafaf9;
+        --text2:  #d6d3d1;
+        --text3:  #a8a29e;
+        --text4:  #78716c;
+        --accent:    #fafaf9;
+        --accent-fg: #1c1917;
+      }
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      -webkit-text-size-adjust: 100%;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* iOS momentum scroll */
+    .scroll-y {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: none;
+    }
+
+    /* Suppress iOS tap flash on all interactive elements */
+    button, a, [role="button"] {
+      -webkit-tap-highlight-color: transparent;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font: inherit;
+      color: inherit;
+    }
+
+    /* ── Screens ── */
+    .screen {
+      display: none;
+      min-height: 100dvh;
+      background: var(--bg);
+      animation: fadeSlideIn 0.3s ease both;
+    }
+    .screen.active { display: block; }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateX(24px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .screen.slide-left {
+      animation: fadeSlideInLeft 0.3s ease both;
+    }
+    @keyframes fadeSlideInLeft {
+      from { opacity: 0; transform: translateX(-24px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ── Typography ── */
+    .label {
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text4);
+      font-weight: 300;
+    }
+    .title-xl {
+      font-size: 36px;
+      font-weight: 200;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+    .title-lg {
+      font-size: 28px;
+      font-weight: 200;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    .divider {
+      width: 24px;
+      height: 1px;
+      background: var(--border2);
+      margin: 0 auto;
+    }
+    .body-sm { font-size: 13px; font-weight: 300; line-height: 1.6; color: var(--text3); }
+    .body-xs { font-size: 11px; font-weight: 300; color: var(--text4); }
+
+    /* ── Card ── */
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 20px;
+    }
+
+    /* ── Button primary ── */
+    .btn-primary {
+      display: block;
+      width: 100%;
+      min-height: 52px;
+      padding: 14px 0;
+      background: var(--accent);
+      color: var(--accent-fg);
+      border-radius: 16px;
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      font-weight: 300;
+      text-align: center;
+      text-decoration: none;
+      transition: opacity 0.15s;
+      user-select: none;
+    }
+    .btn-primary:active { opacity: 0.75; }
+    .btn-primary:disabled, .btn-primary.disabled {
+      background: var(--bg3);
+      color: var(--text4);
+      pointer-events: none;
+    }
+
+    /* ── Button outline ── */
+    .btn-outline {
+      display: block;
+      width: 100%;
+      min-height: 52px;
+      padding: 14px 0;
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      font-weight: 300;
+      text-align: center;
+      color: var(--text3);
+      transition: background 0.15s;
+      user-select: none;
+    }
+    .btn-outline:active { background: var(--bg3); }
+
+    /* ── Info button (top-right on Home) ── */
+    #btn-info {
+      position: absolute;
+      top: max(16px, calc(var(--safe-top) + 12px));
+      right: max(20px, calc(var(--safe-r) + 16px));
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text4);
+      font-size: 22px;
+      z-index: 10;
+      transition: color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #btn-info:active { color: var(--text2); }
+
+    /* ── INFO screen ── */
+    #screen-info { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    #info-header {
+      display: flex;
+      align-items: center;
+      padding:
+        max(16px, calc(var(--safe-top) + 12px))
+        max(20px, var(--safe-r))
+        16px
+        max(20px, var(--safe-l));
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    #info-back {
+      min-width: 44px; min-height: 44px;
+      display: flex; align-items: center;
+      font-size: 13px; font-weight: 300;
+      color: var(--text4);
+      -webkit-tap-highlight-color: transparent;
+      margin-right: 12px; flex-shrink: 0;
+    }
+    #info-back:active { color: var(--text); }
+    #info-header h2 { font-size: 15px; font-weight: 300; color: var(--text); letter-spacing: 0.01em; }
+    #info-body {
+      padding:
+        32px
+        max(24px, var(--safe-r))
+        max(48px, calc(var(--safe-bot) + 32px))
+        max(24px, var(--safe-l));
+      max-width: 480px; margin: 0 auto;
+    }
+    .info-section { margin-bottom: 36px; }
+    .info-section h3 {
+      font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--text4); font-weight: 300; margin-bottom: 12px;
+    }
+    .info-section p {
+      font-size: 14px; font-weight: 300; line-height: 1.75; color: var(--text2);
+    }
+    .info-section p + p { margin-top: 12px; }
+    .intel-grid { display: flex; flex-direction: column; gap: 8px; }
+    .intel-item {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 16px;
+    }
+    .intel-item .intel-name { font-size: 13px; font-weight: 300; color: var(--text); margin-bottom: 3px; }
+    .intel-item .intel-desc { font-size: 12px; font-weight: 300; color: var(--text4); line-height: 1.5; }
+
+    /* ── Confirm modal ── */
+    #confirm-overlay {
+      display: none; position: fixed; inset: 0; z-index: 100;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      align-items: flex-end; justify-content: center;
+    }
+    #confirm-overlay.show { display: flex; animation: overlayIn 0.2s ease both; }
+    @keyframes overlayIn { from { opacity:0; } to { opacity:1; } }
+    #confirm-sheet {
+      background: var(--bg2);
+      border-radius: 20px 20px 0 0;
+      padding: 28px 24px;
+      padding-bottom: max(28px, calc(var(--safe-bot) + 20px));
+      width: 100%; max-width: 480px;
+      animation: sheetUp 0.28s cubic-bezier(0.34,1.1,0.64,1) both;
+    }
+    @keyframes sheetUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+    #confirm-sheet h3 { font-size: 17px; font-weight: 300; color: var(--text); margin-bottom: 8px; text-align: center; }
+    #confirm-sheet p  { font-size: 13px; font-weight: 300; color: var(--text3); text-align: center; line-height: 1.6; margin-bottom: 24px; }
+    .confirm-actions { display: flex; flex-direction: column; gap: 10px; }
+    #confirm-quit {
+      min-height: 52px; padding: 14px;
+      background: #ef4444; color: #fff;
+      border-radius: 14px; font-size: 14px; font-weight: 300; text-align: center;
+      -webkit-tap-highlight-color: transparent; transition: opacity 0.15s;
+    }
+    #confirm-quit:active { opacity: 0.75; }
+    #confirm-cancel {
+      min-height: 52px; padding: 14px;
+      background: var(--bg3); color: var(--text2);
+      border-radius: 14px; font-size: 14px; font-weight: 300; text-align: center;
+      -webkit-tap-highlight-color: transparent; transition: opacity 0.15s;
+    }
+    #confirm-cancel:active { opacity: 0.65; }
+
+    /* ── HOME screen ── */
+    #screen-home .inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100dvh;
+      padding:
+        max(48px, calc(var(--safe-top) + 24px))
+        max(24px, calc(var(--safe-r) + 20px))
+        max(48px, calc(var(--safe-bot) + 24px))
+        max(24px, calc(var(--safe-l) + 20px));
+    }
+    #screen-home .content { width: 100%; max-width: 360px; }
+
+    .scale-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      text-align: center;
+      background: var(--bg3);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 32px;
+    }
+    .scale-grid .num {
+      font-size: 28px;
+      font-weight: 200;
+      color: var(--text);
+    }
+    .scale-grid .lbl { font-size: 10px; color: var(--text3); font-weight: 300; }
+
+    /* ── TEST screen ── */
+    #screen-test {
+      display: none;
+      flex-direction: column;
+      min-height: 100dvh;
+    }
+    #screen-test.active { display: flex; }
+
+    /* Fixed header */
+    #test-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 20;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding-top: var(--safe-top);
+    }
+    #progress-bar-track {
+      height: 2px;
+      background: var(--bg3);
+    }
+    #progress-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.5s ease;
+    }
+    #test-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      height: 52px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    #test-nav button {
+      min-width: 44px;
+      min-height: 44px;
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--text4);
+      width: 70px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+    }
+    #test-nav button:active { color: var(--text); }
+    #test-nav .spacer { width: 70px; }
+    #test-counter { text-align: center; }
+    #test-counter .pages {
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--text);
+      font-weight: 300;
+    }
+    #test-counter .pct {
+      font-size: 11px;
+      color: var(--text4);
+      font-weight: 300;
+    }
+
+    /* Scrollable body */
+    #test-body {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 120px;
+      padding-left: max(20px, var(--safe-l));
+      padding-right: max(20px, var(--safe-r));
+    }
+    #test-body .inner {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .q-label {
+      font-size: 11px;
+      color: var(--text4);
+      font-weight: 300;
+      margin-bottom: 4px;
+    }
+    .q-text {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text2);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+    .q-block { margin-bottom: 28px; }
+
+    /* Answer buttons */
+    .answers {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .ans-btn {
+      min-height: 52px;
+      padding: 10px 4px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      transition: background 0.12s, border-color 0.12s;
+      user-select: none;
+    }
+    .ans-btn:active { background: var(--bg3); }
+    .ans-btn.selected {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .ans-btn .ans-num {
+      font-size: 17px;
+      font-weight: 300;
+      color: var(--text);
+    }
+    .ans-btn.selected .ans-num { color: var(--accent-fg); }
+    .ans-btn .ans-lbl {
+      font-size: 9px;
+      color: var(--text4);
+      font-weight: 300;
+    }
+    .ans-btn.selected .ans-lbl { color: color-mix(in srgb, var(--accent-fg) 60%, transparent); }
+
+    /* Fixed footer */
+    #test-footer {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 16px max(20px, var(--safe-r)) calc(var(--safe-bot) + 16px) max(20px, var(--safe-l));
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+    }
+    #test-footer .inner {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    #footer-hint {
+      font-size: 11px;
+      color: var(--text4);
+      font-weight: 300;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    /* ── RESULTS screen ── */
+    #screen-results { padding-bottom: max(40px, calc(var(--safe-bot) + 24px)); }
+
+    #results-header {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding:
+        max(48px, calc(var(--safe-top) + 24px))
+        max(24px, var(--safe-r))
+        32px
+        max(24px, var(--safe-l));
+      text-align: center;
+    }
+
+    /* Podium */
+    #podium {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 8px;
+      height: 120px;
+      padding: 0 20px;
+    }
+    .podium-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .podium-bar {
+      width: 100%;
+      border-radius: 4px 4px 0 0;
+      transition: height 0.7s cubic-bezier(0.34,1.2,0.64,1);
+    }
+    .podium-col.first .podium-bar { background: var(--accent); }
+    .podium-col.second .podium-bar { background: var(--border2); }
+    .podium-col.third .podium-bar  { background: var(--border); }
+    .podium-score { font-size: 11px; font-weight: 300; color: var(--text3); margin-bottom: 4px; }
+    .podium-col.first .podium-score { color: var(--text); }
+    .podium-name { font-size: 9px; color: var(--text4); font-weight: 300; margin-top: 4px; text-align: center; line-height: 1.3; }
+    .podium-col.first .podium-name  { color: var(--text2); font-weight: 400; }
+
+    /* Score rows */
+    .score-rows { padding: 0 max(20px, var(--safe-l)) 0 max(20px, var(--safe-r)); }
+    .score-rows .inner { max-width: 400px; margin: 0 auto; }
+
+    .score-row {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .score-row.top { border-color: var(--border2); box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
+    .score-row-head {
+      padding: 14px 16px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 52px;
+    }
+    .row-left { display: flex; align-items: center; gap: 8px; }
+    .row-rank { font-size: 11px; color: var(--text4); font-weight: 300; width: 16px; }
+    .row-name { font-size: 13px; font-weight: 300; color: var(--text2); }
+    .score-row.top .row-name { color: var(--text); }
+    .top-badge {
+      font-size: 8px;
+      letter-spacing: 0.05em;
+      background: var(--accent);
+      color: var(--accent-fg);
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-weight: 300;
+    }
+    .row-right { display: flex; align-items: center; gap: 8px; }
+    .row-score { font-size: 11px; color: var(--text3); font-weight: 300; }
+    .row-pct   { font-size: 11px; color: var(--text4); font-weight: 300; }
+    .row-arrow { font-size: 11px; color: var(--border2); transition: transform 0.2s; }
+    .score-row.open .row-arrow { transform: rotate(180deg); }
+
+    .score-bar-track {
+      height: 3px;
+      background: var(--bg3);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 0 16px 14px;
+    }
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--border2);
+      width: 0;
+      transition: width 0.8s cubic-bezier(0.34,1,0.64,1);
+    }
+    .score-row.top .score-bar-fill { background: var(--accent); }
+
+    .score-detail {
+      display: none;
+      padding: 0 16px 16px;
+      border-top: 1px solid var(--bg3);
+    }
+    .score-row.open .score-detail { display: block; }
+    .score-detail p { font-size: 12px; font-weight: 300; color: var(--text3); line-height: 1.65; margin-top: 12px; }
+    .score-detail em { font-size: 11px; color: var(--text4); display: block; margin-top: 8px; }
+
+    .total-row {
+      background: var(--bg3);
+      border-radius: 16px;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 16px max(20px, var(--safe-l));
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ── Pull-to-refresh ── */
+    .ptr-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      overflow: hidden;
+      height: 0;
+      transition: height 0.3s ease;
+    }
+    .ptr-spinner {
+      width: 20px; height: 20px;
+      border: 2px solid var(--text4);
+      border-top-color: transparent;
+      border-radius: 50%;
+    }
+    .ptr-spinner.spin { animation: spin 0.6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Misc helpers ── */
+    .section-padding {
+      padding: 0 max(20px, var(--safe-l)) 0 max(20px, var(--safe-l));
+    }
+    .mt-6 { margin-top: 24px; }
+    .mt-4 { margin-top: 16px; }
+    .mb-3 { margin-bottom: 12px; }
+    .text-center { text-align: center; }
+    .w-full { width: 100%; }
+
+    /* Pull to refresh — home */
+    #ptr-home { transition: height 0.3s ease; }
+    #ptr-results { transition: height 0.3s ease; }
+  </style>
+
+</head>
+<body>
+
+<!-- ══════════════ HOME ══════════════ -->
+
+<div id="screen-home" class="screen active slide-left" style="position:relative">
+
+  <!-- Info button -->
+
+<button id="btn-info" onclick="showScreen('info')" aria-label="À propos">ⓘ</button>
+
+  <div id="ptr-home" class="ptr-indicator" style="height:0">
+    <div id="ptr-home-spinner" class="ptr-spinner"></div>
+  </div>
+
+  <div class="inner scroll-y">
+    <div class="content">
+
+  <!-- Header -->
+  <div class="text-center mb-3" style="margin-bottom:40px">
+    <p class="label" style="margin-bottom:20px">Howard Gardner · 1983</p>
+    <h1 class="title-xl" style="margin-bottom:16px">Les 9 Formes<br>d'Intelligence</h1>
+    <div class="divider" style="margin-bottom:20px"></div>
+    <p class="body-sm">Découvrez votre profil d'intelligences multiples à travers 90 questions soigneusement sélectionnées.</p>
+  </div>
+
+  <!-- Info card -->
+  <div class="card" style="margin-bottom:20px">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <div style="width:4px;height:4px;border-radius:50%;background:var(--border2);margin-top:6px;flex-shrink:0"></div>
+        <div><span class="body-sm" style="color:var(--text2)">90 questions</span><span class="body-sm"> — réparties en 9 pages</span></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <div style="width:4px;height:4px;border-radius:50%;background:var(--border2);margin-top:6px;flex-shrink:0"></div>
+        <div><span class="body-sm" style="color:var(--text2)">4 niveaux de réponse</span><span class="body-sm"> — de 0 à 3</span></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <div style="width:4px;height:4px;border-radius:50%;background:var(--border2);margin-top:6px;flex-shrink:0"></div>
+        <div><span class="body-sm" style="color:var(--text2)">Environ 10 minutes</span><span class="body-sm"> — répondez spontanément</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scale -->
+  <div class="scale-grid">
+    <div>
+      <div class="num">0</div>
+      <div class="lbl">Pas du tout</div>
+    </div>
+    <div>
+      <div class="num">1</div>
+      <div class="lbl">Plutôt non</div>
+    </div>
+    <div>
+      <div class="num">2</div>
+      <div class="lbl">Plutôt oui</div>
+    </div>
+    <div>
+      <div class="num">3</div>
+      <div class="lbl">Tout à fait</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <button class="btn-primary" onclick="startTest()">Commencer le test</button>
+  <p class="body-xs text-center" style="margin-top:16px">Théorie des intelligences multiples</p>
+</div>
+
+  </div>
+</div>
+
+<!-- ══════════════ INFO ══════════════ -->
+
+<div id="screen-info" class="screen">
+
+  <div id="info-header">
+    <button id="info-back" onclick="showScreen('home', true)" aria-label="Retour">← Retour</button>
+    <h2>À propos</h2>
+  </div>
+
+  <div id="info-body">
+
+<div class="info-section">
+  <h3>Howard Gardner · 1983</h3>
+  <p>En 1983, le psychologue Howard Gardner publie <em>Frames of Mind</em>, bouleversant la conception traditionnelle de l'intelligence. Il propose que l'être humain ne possède pas une intelligence unique mesurable par un QI, mais un ensemble de capacités distinctes et indépendantes.</p>
+  <p>Cette théorie remet en question l'hégémonie des intelligences logico-mathématique et linguistique dans nos systèmes éducatifs, et invite à reconnaître la diversité des talents humains.</p>
+</div>
+
+<div class="info-section">
+  <h3>Les 9 intelligences</h3>
+  <div class="intel-grid">
+    <div class="intel-item">
+      <div class="intel-name">Linguistique</div>
+      <div class="intel-desc">Maîtrise du langage, narration, persuasion — écrivains, journalistes, avocats.</div>
+    </div>
+    <div class="intel-item">
+      <div class="intel-name">Logico-mathématique</div>
+      <div class="intel-desc">Raisonnement logique, calcul, résolution de problèmes abstraits — ingénieurs, scientifiques.</div>
+    </div>
+    <div class="intel-item">
+      <div class="intel-name">Spatiale</div>
+      <div class="intel-desc">Visualisation mentale, orientation, imagination 3D — architectes, designers, artistes.</div>
+    </div>
+    <div class="intel-item">
+      <div class="intel-name">Musicale</div>
+      <div class="intel-desc">Sensibilité au rythme et à la mélodie — musiciens, compositeurs, producteurs.</div>
+    </div>
+    <div class="intel-item">
+      <div class="intel-name">Corporelle-kinesthésique</div>
+      <div class="intel-desc">Maîtrise du corps, coordination, adresse manuelle — sportifs, danseurs, artisans.</div>
+    </div>
+    <div class="intel-item">
+      <div class="intel-name">Interpersonnelle</div>
+      <div class="intel-desc">Comprendre les autres, empathie, leadership — enseignants, coachs, thérapeutes.</div>
+    </div>
+    <div class="intel-item">
+      <div class="intel-name">Intrapersonnelle</div>
+      <div class="intel-desc">Connaissance de soi, introspection, gestion des émotions — philosophes, entrepreneurs.</div>
+    </div>
+    <div class="intel-item">
+      <div class="intel-name">Naturaliste</div>
+      <div class="intel-desc">Sensibilité au vivant, classification du monde naturel — biologistes, écologistes.</div>
+    </div>
+    <div class="intel-item">
+      <div class="intel-name">Existentielle</div>
+      <div class="intel-desc">Réflexion sur les grandes questions de l'existence — philosophes, leaders spirituels.</div>
+    </div>
+  </div>
+</div>
+
+<div class="info-section">
+  <h3>À propos du test</h3>
+  <p>Ce questionnaire de 90 affirmations (10 par intelligence) vous propose d'évaluer sur une échelle de 0 à 3 dans quelle mesure chaque affirmation vous correspond. Il ne s'agit pas d'un test clinique, mais d'un outil de réflexion sur vos tendances naturelles.</p>
+  <p>Répondez spontanément, sans trop réfléchir. Il n'y a pas de bonnes ou de mauvaises réponses.</p>
+</div>
+
+<div class="info-section">
+  <h3>Limites & nuances</h3>
+  <p>La théorie de Gardner fait l'objet de débats dans la communauté scientifique. Certains chercheurs estiment que ces « intelligences » s'apparentent davantage à des talents ou des aptitudes qu'à des formes d'intelligence au sens strict.</p>
+  <p>Utilisez ce test comme un miroir de vos préférences, non comme une vérité absolue sur vos capacités.</p>
+</div>
+
+  </div>
+</div>
+
+<!-- ══════════════ TEST ══════════════ -->
+
+<div id="screen-test" class="screen">
+
+  <!-- Fixed header -->
+
+  <div id="test-header">
+    <div id="progress-bar-track">
+      <div id="progress-bar-fill" style="width:11.11%"></div>
+    </div>
+    <div id="test-nav">
+      <button onclick="testPrev()">← Retour</button>
+      <div id="test-counter">
+        <div id="test-pages" class="pages">1 <span style="color:var(--text4)">/</span> 9</div>
+        <div id="test-pct" class="pct">0% complété</div>
+      </div>
+      <button onclick="showConfirm()" style="text-align:right;color:var(--text4);font-size:13px;font-weight:300;width:70px;justify-content:flex-end" aria-label="Quitter le test">Quitter</button>
+    </div>
+  </div>
+
+  <!-- Scrollable questions -->
+
+  <div id="test-body" class="scroll-y">
+    <div class="inner" id="test-questions"></div>
+  </div>
+
+  <!-- Fixed footer -->
+
+  <div id="test-footer">
+    <div class="inner">
+      <div id="footer-hint">Répondez à toutes les questions pour continuer</div>
+      <button id="btn-next" class="btn-primary disabled" onclick="testNext()">Page suivante</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ RESULTS ══════════════ -->
+
+<div id="screen-results" class="screen scroll-y">
+
+  <div id="ptr-results" class="ptr-indicator" style="height:0">
+    <div id="ptr-results-spinner" class="ptr-spinner"></div>
+  </div>
+
+  <!-- Header -->
+
+  <div id="results-header">
+    <p class="label" style="margin-bottom:12px">Résultats</p>
+    <h2 class="title-lg" style="margin-bottom:12px">Votre profil</h2>
+    <div class="divider" style="margin-bottom:16px"></div>
+    <p class="body-xs" style="margin-bottom:4px">Intelligence dominante</p>
+    <p id="top-label" style="font-size:17px;font-weight:300;color:var(--text)"></p>
+  </div>
+
+  <!-- Podium -->
+
+  <div class="section-padding" style="margin-top:24px;margin-bottom:16px">
+    <p class="label" style="margin-bottom:12px">Votre classement</p>
+    <div id="podium"></div>
+  </div>
+
+  <!-- Score rows -->
+
+  <div class="score-rows" style="margin-top:24px">
+    <p class="label" style="margin-bottom:12px">Détail complet</p>
+    <div class="inner" id="score-list"></div>
+  </div>
+
+  <!-- Total -->
+
+  <div style="padding:0 max(20px, var(--safe-l));margin-top:16px">
+    <div style="max-width:400px;margin:0 auto">
+      <div class="total-row">
+        <span class="body-sm">Score total</span>
+        <span id="total-score" style="font-size:14px;font-weight:300;color:var(--text2)"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Restart -->
+
+  <div style="padding:0 max(20px, var(--safe-l));margin-top:24px">
+    <div style="max-width:400px;margin:0 auto">
+      <button class="btn-outline" onclick="restartTest()">Recommencer</button>
+      <p class="body-xs text-center" style="margin-top:12px;line-height:1.6">Appuyez sur chaque intelligence pour en savoir plus</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ CONFIRM QUIT MODAL ══════════════ -->
+
+<div id="confirm-overlay" onclick="hideConfirm(event)">
+  <div id="confirm-sheet">
+    <h3>Quitter le test ?</h3>
+    <p>Votre progression sera perdue.<br>Vous devrez recommencer depuis le début.</p>
+    <div class="confirm-actions">
+      <button id="confirm-quit" onclick="quitTest()">Quitter</button>
+      <button id="confirm-cancel" onclick="hideConfirm()">Continuer le test</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════
+   DATA
+═══════════════════════════════════════ */
+const questions = [
+  { id: 1,  text: "Je réfléchis à l'impact de mes actions sur le monde.", type: "Existentielle" },
+  { id: 2,  text: "J'imagine facilement des objets en 3D.", type: "Spatiale" },
+  { id: 3,  text: "J'aime le sport ou les activités physiques.", type: "Corporelle-kinesthésique" },
+  { id: 4,  text: "J'aime les cartes ou les plans.", type: "Spatiale" },
+  { id: 5,  text: "Je suis souvent médiateur.", type: "Interpersonnelle" },
+  { id: 6,  text: "J'aime raconter des histoires.", type: "Linguistique" },
+  { id: 7,  text: "Je distingue facilement différentes espèces.", type: "Naturaliste" },
+  { id: 8,  text: "Les débats sur les valeurs m'intéressent.", type: "Existentielle" },
+  { id: 9,  text: "Je suis à l'aise avec les activités manuelles.", type: "Corporelle-kinesthésique" },
+  { id: 10, text: "Je m'intéresse aux écosystèmes.", type: "Naturaliste" },
+  { id: 11, text: "Je suis à l'aise pour rencontrer de nouvelles personnes.", type: "Interpersonnelle" },
+  { id: 12, text: "J'aime les puzzles et casse-têtes.", type: "Logico-mathématique" },
+  { id: 13, text: "Je sais ce qui me motive vraiment.", type: "Intrapersonnelle" },
+  { id: 14, text: "Je remarque facilement les détails visuels.", type: "Spatiale" },
+  { id: 15, text: "J'apprends de mes expériences.", type: "Intrapersonnelle" },
+  { id: 16, text: "Je m'interroge sur la mort ou l'existence.", type: "Existentielle" },
+  { id: 17, text: "J'apprends mieux en faisant qu'en lisant.", type: "Corporelle-kinesthésique" },
+  { id: 18, text: "Les schémas m'aident à comprendre.", type: "Spatiale" },
+  { id: 19, text: "J'aime écrire des textes, lettres ou histoires.", type: "Linguistique" },
+  { id: 20, text: "Les jeux de stratégie me plaisent.", type: "Logico-mathématique" },
+  { id: 21, text: "Les jeux de mots me plaisent.", type: "Linguistique" },
+  { id: 22, text: "Je prends des décisions alignées avec mes valeurs.", type: "Intrapersonnelle" },
+  { id: 23, text: "Les idées abstraites me passionnent.", type: "Existentielle" },
+  { id: 24, text: "Je cherche souvent la solution la plus efficace.", type: "Logico-mathématique" },
+  { id: 25, text: "Je remarque facilement les changements dans l'environnement.", type: "Naturaliste" },
+  { id: 26, text: "Les gens viennent souvent me parler de leurs problèmes.", type: "Interpersonnelle" },
+  { id: 27, text: "Je retiens facilement des mélodies.", type: "Musicale" },
+  { id: 28, text: "J'ai une bonne coordination corporelle.", type: "Corporelle-kinesthésique" },
+  { id: 29, text: "J'analyse souvent les causes et effets.", type: "Logico-mathématique" },
+  { id: 30, text: "Je comprends ce que les gens ressentent même sans paroles.", type: "Interpersonnelle" },
+  { id: 31, text: "Je repère facilement des schémas ou patterns.", type: "Logico-mathématique" },
+  { id: 32, text: "Je gère bien les conflits.", type: "Interpersonnelle" },
+  { id: 33, text: "J'aime apprendre de nouveaux mots.", type: "Linguistique" },
+  { id: 34, text: "Je sais motiver les autres.", type: "Interpersonnelle" },
+  { id: 35, text: "J'aime les paysages naturels.", type: "Naturaliste" },
+  { id: 36, text: "J'explique facilement des idées avec des mots.", type: "Linguistique" },
+  { id: 37, text: "Je comprends bien mes émotions.", type: "Intrapersonnelle" },
+  { id: 38, text: "Les documentaires sur la nature m'intéressent.", type: "Naturaliste" },
+  { id: 39, text: "Les grandes questions philosophiques m'intéressent.", type: "Existentielle" },
+  { id: 40, text: "Je reproduis facilement des mouvements.", type: "Corporelle-kinesthésique" },
+  { id: 41, text: "J'aime chanter ou jouer d'un instrument.", type: "Musicale" },
+  { id: 42, text: "Je visualise facilement des solutions dans ma tête.", type: "Spatiale" },
+  { id: 43, text: "Je connais mes forces et faiblesses.", type: "Intrapersonnelle" },
+  { id: 44, text: "Je suis à l'aise pour débattre ou argumenter.", type: "Linguistique" },
+  { id: 45, text: "Je remarque facilement les plantes ou animaux.", type: "Naturaliste" },
+  { id: 46, text: "J'imagine des scènes ou paysages facilement.", type: "Spatiale" },
+  { id: 47, text: "Je comprends bien les techniques physiques.", type: "Corporelle-kinesthésique" },
+  { id: 48, text: "J'aime analyser mes réactions.", type: "Intrapersonnelle" },
+  { id: 49, text: "Je bouge souvent quand je réfléchis.", type: "Corporelle-kinesthésique" },
+  { id: 50, text: "Je prends du temps pour réfléchir à ma vie.", type: "Intrapersonnelle" },
+  { id: 51, text: "J'écoute souvent de la musique.", type: "Musicale" },
+  { id: 52, text: "Je comprends facilement les émotions des autres.", type: "Interpersonnelle" },
+  { id: 53, text: "J'aime passer du temps dehors.", type: "Naturaliste" },
+  { id: 54, text: "Je me concentre mieux avec de la musique.", type: "Musicale" },
+  { id: 55, text: "J'aime discuter de spiritualité ou philosophie.", type: "Existentielle" },
+  { id: 56, text: "Je reconnais facilement des chansons.", type: "Musicale" },
+  { id: 57, text: "J'aime résoudre des problèmes logiques.", type: "Logico-mathématique" },
+  { id: 58, text: "J'aime construire ou bricoler.", type: "Corporelle-kinesthésique" },
+  { id: 59, text: "Je tape souvent un rythme inconsciemment.", type: "Musicale" },
+  { id: 60, text: "Les jeux de construction me plaisent.", type: "Spatiale" },
+  { id: 61, text: "J'aime jouer avec les mots ou écrire.", type: "Linguistique" },
+  { id: 62, text: "J'aime comprendre comment fonctionnent les systèmes.", type: "Logico-mathématique" },
+  { id: 63, text: "Je distingue bien les sons ou tonalités.", type: "Musicale" },
+  { id: 64, text: "J'aime organiser les choses de façon logique.", type: "Logico-mathématique" },
+  { id: 65, text: "La musique influence beaucoup mes émotions.", type: "Musicale" },
+  { id: 66, text: "J'ai une bonne mémoire des gestes.", type: "Corporelle-kinesthésique" },
+  { id: 67, text: "Je me remets facilement en question.", type: "Intrapersonnelle" },
+  { id: 68, text: "Les rythmes me viennent naturellement.", type: "Musicale" },
+  { id: 69, text: "J'aime dessiner ou concevoir des formes.", type: "Spatiale" },
+  { id: 70, text: "J'aime observer la nature.", type: "Naturaliste" },
+  { id: 71, text: "Je cherche souvent une vision globale des choses.", type: "Existentielle" },
+  { id: 72, text: "Je lis facilement et souvent.", type: "Linguistique" },
+  { id: 73, text: "J'aime concevoir des objets ou structures.", type: "Spatiale" },
+  { id: 74, text: "Je réfléchis souvent sur moi-même.", type: "Intrapersonnelle" },
+  { id: 75, text: "J'aime comprendre les grandes questions humaines.", type: "Existentielle" },
+  { id: 76, text: "Je manipule facilement des objets ou outils.", type: "Corporelle-kinesthésique" },
+  { id: 77, text: "Je mémorise facilement des citations ou phrases.", type: "Linguistique" },
+  { id: 78, text: "J'aime jardiner ou m'occuper d'animaux.", type: "Naturaliste" },
+  { id: 79, text: "Je m'adapte facilement aux autres.", type: "Interpersonnelle" },
+  { id: 80, text: "Les langues étrangères m'attirent.", type: "Linguistique" },
+  { id: 81, text: "J'aime travailler en équipe.", type: "Interpersonnelle" },
+  { id: 82, text: "Je me sens bien dans la nature.", type: "Naturaliste" },
+  { id: 83, text: "Les chiffres ne me font pas peur.", type: "Logico-mathématique" },
+  { id: 84, text: "Je me repère facilement dans un lieu.", type: "Spatiale" },
+  { id: 85, text: "Je remarque facilement les rythmes.", type: "Musicale" },
+  { id: 86, text: "Les mathématiques me semblent naturelles.", type: "Logico-mathématique" },
+  { id: 87, text: "Je pense souvent à la place de l'homme dans l'univers.", type: "Existentielle" },
+  { id: 88, text: "Je me fixe des objectifs personnels.", type: "Intrapersonnelle" },
+  { id: 89, text: "Je réfléchis souvent au sens de la vie.", type: "Existentielle" },
+  { id: 90, text: "Je détecte facilement l'ambiance d'un groupe.", type: "Interpersonnelle" },
+];
+
+const intelligenceInfo = {
+  "Linguistique":             { description: "Maîtrise du langage oral et écrit, narration, persuasion et sensibilité aux mots.", professions: "Écrivains, avocats, journalistes, poètes" },
+  "Logico-mathématique":      { description: "Raisonnement logique, calcul et résolution de problèmes abstraits.", professions: "Mathématiciens, ingénieurs, programmeurs, scientifiques" },
+  "Spatiale":                 { description: "Visualisation mentale, orientation dans l'espace, imagination 3D et sens esthétique.", professions: "Architectes, artistes, pilotes, designers" },
+  "Musicale":                 { description: "Sensibilité au rythme, à la mélodie et capacité à composer ou performer.", professions: "Musiciens, compositeurs, DJ, producteurs sonores" },
+  "Corporelle-kinesthésique": { description: "Maîtrise du corps, coordination, adresse manuelle et expression par le mouvement.", professions: "Sportifs, danseurs, artisans, acteurs" },
+  "Interpersonnelle":         { description: "Comprendre les émotions et intentions des autres, empathie et leadership.", professions: "Psychologues, enseignants, leaders, coachs" },
+  "Intrapersonnelle":         { description: "Connaissance de soi, gestion des émotions internes et introspection profonde.", professions: "Thérapeutes, philosophes, entrepreneurs, méditants" },
+  "Naturaliste":              { description: "Sensibilité à la nature, reconnaissance et classification du monde vivant.", professions: "Biologistes, écologistes, vétérinaires, botanistes" },
+  "Existentielle":            { description: "Capacité à réfléchir aux grandes questions : sens de la vie, mort, existence.", professions: "Philosophes, théologiens, leaders spirituels" },
+};
+
+const answerLabels = [
+  { value: 0, label: "Pas du tout" },
+  { value: 1, label: "Plutôt non" },
+  { value: 2, label: "Plutôt oui" },
+  { value: 3, label: "Tout à fait" },
+];
+
+/* ════════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
+const PER_PAGE = 10;
+const TOTAL_PAGES = Math.ceil(questions.length / PER_PAGE);
+let currentPage = 0;
+let answers = {};
+
+/* ════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+function showScreen(id, fromLeft = false) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen-' + id);
+  el.classList.toggle('slide-left', fromLeft);
+  el.classList.add('active');
+  // Reset scroll position
+  el.scrollTop = 0;
+  const body = el.querySelector('.scroll-y');
+  if (body) body.scrollTop = 0;
+}
+
+/* ════════════════════════════════════════
+   HOME
+═══════════════════════════════════════ */
+function startTest() {
+  answers = {};
+  currentPage = 0;
+  renderTestPage();
+  showScreen('test');
+}
+
+// Pull-to-refresh on Home
+setupPTR('screen-home', 'ptr-home', 'ptr-home-spinner', () => {/* no-op */});
+
+/* ════════════════════════════════════════
+   TEST
+═══════════════════════════════════════ */
+function renderTestPage() {
+  const start = currentPage * PER_PAGE;
+  const pageQs = questions.slice(start, start + PER_PAGE);
+  const totalAnswered = Object.keys(answers).length;
+
+  // Update header
+  document.getElementById('test-pages').innerHTML =
+    `${currentPage + 1} <span style="color:var(--text4)">/</span> ${TOTAL_PAGES}`;
+  document.getElementById('test-pct').textContent =
+    `${Math.round((totalAnswered / questions.length) * 100)}% complété`;
+  document.getElementById('progress-bar-fill').style.width =
+    `${((currentPage + 1) / TOTAL_PAGES) * 100}%`;
+
+  // Render questions
+  const container = document.getElementById('test-questions');
+
+  // Calculate dynamic top padding for content (header height + safe area)
+  const headerEl = document.getElementById('test-header');
+  const headerH = headerEl ? headerEl.offsetHeight : 72;
+  container.parentElement.style.paddingTop = (headerH + 16) + 'px';
+
+  container.innerHTML = `
+    <div style="margin-bottom:24px;padding-top:8px">
+      <p class="label">Questions ${start + 1}–${Math.min(start + PER_PAGE, questions.length)}</p>
+    </div>
+    ${pageQs.map((q, i) => `
+      <div class="q-block">
+        <p class="q-label">${start + i + 1}.</p>
+        <p class="q-text">${q.text}</p>
+        <div class="answers">
+          ${answerLabels.map(a => `
+            <button
+              class="ans-btn ${answers[q.id] === a.value ? 'selected' : ''}"
+              onclick="selectAnswer(${q.id}, ${a.value})"
+              aria-pressed="${answers[q.id] === a.value}"
+              aria-label="${a.value} — ${a.label}"
+            >
+              <span class="ans-num">${a.value}</span>
+              <span class="ans-lbl">${a.label}</span>
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    `).join('')}
+  `;
+
+  updateFooter();
+}
+
+function selectAnswer(qId, value) {
+  answers[qId] = value;
+  // Re-render just the buttons for this question (fast, no full re-render)
+  const start = currentPage * PER_PAGE;
+  const pageQs = questions.slice(start, start + PER_PAGE);
+
+  pageQs.forEach(q => {
+    const block = document.getElementById('test-questions').querySelectorAll('.q-block');
+    const idx = pageQs.indexOf(q);
+    if (idx < 0) return;
+    const btns = block[idx]?.querySelectorAll('.ans-btn');
+    btns?.forEach(btn => {
+      const v = parseInt(btn.querySelector('.ans-num').textContent);
+      btn.classList.toggle('selected', answers[q.id] === v);
+      btn.setAttribute('aria-pressed', answers[q.id] === v);
+    });
+  });
+
+  // Update progress
+  const totalAnswered = Object.keys(answers).length;
+  document.getElementById('test-pct').textContent =
+    `${Math.round((totalAnswered / questions.length) * 100)}% complété`;
+
+  updateFooter();
+}
+
+function updateFooter() {
+  const start = currentPage * PER_PAGE;
+  const pageQs = questions.slice(start, start + PER_PAGE);
+  const allAnswered = pageQs.every(q => answers[q.id] !== undefined);
+  const btn = document.getElementById('btn-next');
+  const hint = document.getElementById('footer-hint');
+
+  btn.classList.toggle('disabled', !allAnswered);
+  hint.style.display = allAnswered ? 'none' : 'block';
+  btn.textContent = currentPage < TOTAL_PAGES - 1 ? 'Page suivante' : 'Voir mes résultats';
+}
+
+function testNext() {
+  const start = currentPage * PER_PAGE;
+  const pageQs = questions.slice(start, start + PER_PAGE);
+  if (!pageQs.every(q => answers[q.id] !== undefined)) return;
+
+  if (currentPage < TOTAL_PAGES - 1) {
+    currentPage++;
+    renderTestPage();
+    document.getElementById('test-body').scrollTop = 0;
+  } else {
+    sessionStorage.setItem('testAnswers', JSON.stringify(answers));
+    showResults();
+  }
+}
+
+function testPrev() {
+  if (currentPage > 0) {
+    currentPage--;
+    renderTestPage();
+    document.getElementById('test-body').scrollTop = 0;
+  } else {
+    showConfirm();
+  }
+}
+
+/* ════════════════════════════════════════
+   CONFIRM QUIT
+═══════════════════════════════════════ */
+function showConfirm() {
+  document.getElementById('confirm-overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function hideConfirm(e) {
+  // Close if clicking the backdrop (not the sheet itself)
+  if (e && e.target !== document.getElementById('confirm-overlay')) return;
+  document.getElementById('confirm-overlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+function quitTest() {
+  document.getElementById('confirm-overlay').classList.remove('show');
+  document.body.style.overflow = '';
+  answers = {};
+  currentPage = 0;
+  showScreen('home', true);
+}
+
+/* ════════════════════════════════════════
+   RESULTS
+═══════════════════════════════════════ */
+function showResults() {
+  computeAndRenderResults();
+  showScreen('results');
+}
+
+function computeAndRenderResults() {
+  const saved = sessionStorage.getItem('testAnswers');
+  if (!saved) { showScreen('home', true); return; }
+  const ans = JSON.parse(saved);
+
+  // Compute scores
+  const scores = {};
+  questions.forEach(q => {
+    if (!scores[q.type]) scores[q.type] = 0;
+    scores[q.type] += (ans[q.id] !== undefined ? ans[q.id] : 0);
+  });
+  const sorted = Object.entries(scores).sort(([, a], [, b]) => b - a);
+  const MAX = 30;
+
+  // Top label
+  document.getElementById('top-label').textContent = sorted[0]?.[0] ?? '';
+
+  // Podium (2nd | 1st | 3rd)
+  const podiumEl = document.getElementById('podium');
+  const podiumOrder = [sorted[1], sorted[0], sorted[2]];
+  const podiumClasses = ['second', 'first', 'third'];
+  podiumEl.innerHTML = podiumOrder.map((entry, i) => {
+    if (!entry) return '<div class="podium-col"></div>';
+    const [type, score] = entry;
+    const h = Math.round((score / MAX) * 90);
+    return `
+      <div class="podium-col ${podiumClasses[i]}">
+        <div class="podium-score">${score}<span style="color:var(--text4)">/30</span></div>
+        <div class="podium-bar" style="height:${h}px"></div>
+        <div class="podium-name">${type.split('-')[0]}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Score rows
+  const list = document.getElementById('score-list');
+  list.innerHTML = sorted.map(([type, score], idx) => {
+    const pct = Math.round((score / MAX) * 100);
+    const info = intelligenceInfo[type];
+    const isTop = idx === 0;
+    return `
+      <div class="score-row ${isTop ? 'top' : ''}" onclick="toggleRow(this)">
+        <div class="score-row-head">
+          <div class="row-left">
+            <span class="row-rank">${idx + 1}</span>
+            <span class="row-name">${type}</span>
+            ${isTop ? '<span class="top-badge">TOP</span>' : ''}
+          </div>
+          <div class="row-right">
+            <span class="row-score">${score}/30</span>
+            <span class="row-pct">${pct}%</span>
+            <span class="row-arrow">↓</span>
+          </div>
+        </div>
+        <div class="score-bar-track">
+          <div class="score-bar-fill" data-width="${pct}"></div>
+        </div>
+        ${info ? `
+        <div class="score-detail">
+          <p>${info.description}</p>
+          <em>${info.professions}</em>
+        </div>` : ''}
+      </div>
+    `;
+  }).join('');
+
+  // Animate bars after paint
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      list.querySelectorAll('.score-bar-fill').forEach(el => {
+        el.style.width = el.dataset.width + '%';
+      });
+    });
+  });
+
+  // Total
+  const total = sorted.reduce((s, [, v]) => s + v, 0);
+  document.getElementById('total-score').innerHTML =
+    `${total}<span style="color:var(--text4)">/270</span>`;
+}
+
+function toggleRow(el) {
+  el.classList.toggle('open');
+}
+
+function restartTest() {
+  sessionStorage.removeItem('testAnswers');
+  answers = {};
+  currentPage = 0;
+  showScreen('home', true);
+}
+
+// Pull-to-refresh on Results
+setupPTR('screen-results', 'ptr-results', 'ptr-results-spinner', computeAndRenderResults);
+
+/* ════════════════════════════════════════
+   PULL-TO-REFRESH
+═══════════════════════════════════════ */
+function setupPTR(screenId, ptrId, spinnerId, onRefresh) {
+  const screen = document.getElementById(screenId);
+  const ptr = document.getElementById(ptrId);
+  const spinner = document.getElementById(spinnerId);
+  const THRESHOLD = 70;
+  let startY = 0, dist = 0, refreshing = false;
+
+  screen.addEventListener('touchstart', e => {
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+
+  screen.addEventListener('touchmove', e => {
+    if (screen.scrollTop > 0) return;
+    const delta = e.touches[0].clientY - startY;
+    if (delta > 0 && !refreshing) {
+      dist = Math.min(delta * 0.5, THRESHOLD + 20);
+      ptr.style.height = dist + 'px';
+      ptr.style.transition = 'none';
+      const angle = (dist / THRESHOLD) * 180;
+      spinner.style.transform = `rotate(${angle}deg)`;
+    }
+  }, { passive: true });
+
+  screen.addEventListener('touchend', () => {
+    if (dist >= THRESHOLD && !refreshing) {
+      refreshing = true;
+      spinner.classList.add('spin');
+      ptr.style.height = '44px';
+      setTimeout(() => {
+        onRefresh();
+        refreshing = false;
+        spinner.classList.remove('spin');
+        dist = 0;
+        ptr.style.transition = 'height 0.3s ease';
+        ptr.style.height = '0';
+      }, 800);
+    } else {
+      dist = 0;
+      ptr.style.transition = 'height 0.3s ease';
+      ptr.style.height = '0';
+    }
+  }, { passive: true });
+}
+
+/* ════════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+// If returning from sessionStorage, go straight to results
+if (sessionStorage.getItem('testAnswers')) {
+  computeAndRenderResults();
+  showScreen('results');
+}
+</script>
+
+</body>
+</html>
